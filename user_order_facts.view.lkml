@@ -1,7 +1,7 @@
 view: user_order_facts {
     derived_table: {
       sql:SELECT
-          o.user_id,
+          o.user_id as user_id,
           o.id as order_id,
           o.created_at,
           min(o.created_at) as first_order,
@@ -12,6 +12,8 @@ view: user_order_facts {
           JOIN demo_db.order_items oi ON o.id = oi.order_id
           GROUP BY o.user_id
           ;;
+        sql_trigger_value: SELECT MAX(user_id) ;;    #regenerates once per day at midnight
+        indexes: ["user_id"]
     }
 
     dimension: user_id {
