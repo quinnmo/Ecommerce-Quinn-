@@ -73,3 +73,5 @@ explore: users {}
 explore: users_nn {}
 
 explore: user_order_facts {}
+
+explore: mvp_customers {}
