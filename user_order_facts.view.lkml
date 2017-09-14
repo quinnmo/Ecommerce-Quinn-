@@ -12,7 +12,7 @@ view: user_order_facts {
           JOIN demo_db.order_items oi ON o.id = oi.order_id
           GROUP BY o.user_id
           ;;
-        sql_trigger_value: SELECT MAX(user_id) ;;    #regenerates once per day at midnight
+        sql_trigger_value: SELECT MAX(user_id) ;;
         indexes: ["user_id"]
     }
 
@@ -63,7 +63,7 @@ view: user_order_facts {
       sql: ${order_count} = 1  ;;
     }
 
-    dimension: long_time_customers{       #above average time as customer
+    dimension: long_time_customer {       #above average time as customer
       type: yesno
       sql: ${days_as_customer} > 87.2254 ;;
     }
