@@ -65,8 +65,8 @@ view: user_order_facts {
 
     dimension: long_time_customer {       #above average time as customer
       type: yesno
-      sql: ${days_as_customer} > 87.2254 ;;
-    }
+      sql: ${days_as_customer} > 87.2254 ;;     # cant use in other PDT bc references another field in definition?
+    }                                           # why commit changes --> pull request --> pull from production??
 
 #     dimension: life_time_revenue_tier{
 #       type:
