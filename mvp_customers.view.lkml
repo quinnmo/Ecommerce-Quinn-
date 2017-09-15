@@ -3,12 +3,12 @@ view: mvp_customers {       ##not working :(
     sql:
       SELECT
       user_id,
-      lifetime_revenue
+      lifetime_revenue,
+      long_time_customer
       FROM ${user_order_facts.SQL_TABLE_NAME} AS user_order_facts
-      WHERE lifetime_revenue >= "1000.00"
-      --AND long_time_customer = "yes"
+      WHERE lifetime_revenue >= 1000.00
       GROUP BY user_id ;;
-      sql_trigger_value: SELECT MAX(user_id) FROM ${user_order_facts.SQL_TABLE_NAME} ;;
+      sql_trigger_value: SELECT FLOOR((UNIX_TIMESTAMP(NOW()) - 60*60*18)/(60*60*24)) ;;
       indexes: ["user_id"]
   }
 
@@ -24,10 +24,10 @@ view: mvp_customers {       ##not working :(
     sql: ${TABLE}.lifetime_revenue ;;
   }
 
-#   dimension: long_time_customer {
-#     type: yesno
-#     sql: ${TABLE}.long_time_customer ;;
-#   }
+ dimension: long_time_customer {
+     type: yesno
+     sql: ${TABLE}.long_time_customer ;;
+   }
 
 }
 
