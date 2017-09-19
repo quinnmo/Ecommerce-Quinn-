@@ -10,9 +10,8 @@ view: user_order_facts {
           SUM(oi.sale_price) as lifetime_revenue
           FROM demo_db.orders o
           JOIN demo_db.order_items oi ON o.id = oi.order_id
-          GROUP BY o.user_id
-          ;;
-        sql_trigger_value: SELECT MAX(user_id) ;;
+          GROUP BY o.user_id ;;
+        datagroup_trigger: users_datagroup
         indexes: ["user_id"]
     }
 

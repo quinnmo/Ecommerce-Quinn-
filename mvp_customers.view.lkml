@@ -4,7 +4,7 @@ view: mvp_customers {       ##not working :(
       SELECT
       user_id,
       lifetime_revenue,
-      long_time_customer
+      days_as_customer
       FROM ${user_order_facts.SQL_TABLE_NAME} AS user_order_facts
       WHERE lifetime_revenue >= 1000.00
       GROUP BY user_id ;;
@@ -24,9 +24,14 @@ view: mvp_customers {       ##not working :(
     sql: ${TABLE}.lifetime_revenue ;;
   }
 
- dimension: long_time_customer {
+dimension: days_as_customer {
+  type: number
+  sql: ${TABLE}.days_as_customer ;;
+}
+
+dimension: long_time_customer {
      type: yesno
-     sql: ${TABLE}.long_time_customer ;;
+     sql: ${TABLE}.days_as_customer > 87.2254 ;;
    }
 
 }
