@@ -6,6 +6,18 @@ include: "*.view"
 # include all the dashboards
 include: "*.dashboard"
 
+datagroup: orders_datagroup {
+  sql_trigger: SELECT MAX(id) FROM orders ;;      #include etl??
+  max_cache_age: "24 hours"
+}
+
+datagroup: users_datagroup {
+  sql_trigger: SELECT MAX(id) FROM users ;;
+  max_cache_age: "24 hours"
+}
+
+persist_with: orders_datagroup
+
 explore: events {
   join: users {
     type: left_outer
@@ -66,6 +78,7 @@ explore: user_data {
     sql_on: ${user_data.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
+  persist_with: users_datagroup
 }
 
 explore: users {}
