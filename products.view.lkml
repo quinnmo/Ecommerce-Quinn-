@@ -1,6 +1,11 @@
 view: products {
   sql_table_name: demo_db.products ;;
 
+  filter: category_to_count {
+    label: "Type of category to count"
+    suggest_dimension: category
+  }
+
   dimension: id {
     primary_key: yes
     type: number
@@ -74,5 +79,11 @@ view: products {
     type: min
     sql:${rank} ;;
     drill_fields: [id, item_name, brand, category]
+  }
+
+  measure: category_count {
+    type: sum
+    sql: CASE WHEN {% condition category_to_count %} products.category  {% endcondition %}
+          THEN 1 ELSE NULL END ;;
   }
 }
