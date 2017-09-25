@@ -55,6 +55,11 @@ explore: order_items {
     sql_on: ${orders.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
+  join: user_order_facts {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${orders.user_id} = ${user_order_facts.user_id} ;;
+  }
 }
 
 explore: orders {
@@ -66,9 +71,7 @@ explore: orders {
   }
 }
 
-explore: products {
-  fields: [products.id, products.item_name, products.rank, products.brand]
-}
+explore: products {}
 
 explore: schema_migrations {}
 
