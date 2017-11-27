@@ -1,6 +1,27 @@
 view: orders {
   sql_table_name: demo_db.orders ;;
 
+  filter: last_day {
+    type: date_time
+  }
+
+  filter: date_filter {
+    type: date
+    default_value: "last week"
+    }
+
+  dimension: date_test {
+    type: yesno
+    sql: {% condition date_filter %} ${created_date} {% endcondition %}
+          AND {% condition date_filter %} ${users.created_week} {% endcondition %} ;;
+  }
+
+
+  dimension: last_day_group {
+    type: yesno
+    sql: {% condition last_day %} ${created_raw} {% endcondition %};;
+  }
+
   dimension: id {
     primary_key: yes
     type: number
@@ -64,7 +85,7 @@ view: orders {
     value_format: "0.00"
   }
 
-  dimension: order_profit {
+  dimension: net_order_profit {
     type: number
     value_format: "$0.00"
     sql: ${total_amount_of_order} - ${total_cost_of_order} ;;
@@ -85,19 +106,19 @@ view: orders {
 
   measure: average_order_profit {
     type: average
-    sql: ${order_profit} ;;
+    sql: ${net_order_profit} ;;
     drill_fields: [details*]
     value_format: "0.00"
   }
 
-  measure: total_profit {         ##if unknown field error make sure to join inventory_items
+  measure: total_net_profit {         ##if unknown field error make sure to join inventory_items
     type:  sum
-    sql: ${order_profit} ;;
+    sql: ${net_order_profit} ;;
     drill_fields: [details*]
     value_format: "0.00"
   }
 
-  measure: total_revenue {
+  measure: total_net_revenue {
     type: sum
     sql: ${total_amount_of_order} ;;
     value_format: "0.00"
@@ -109,10 +130,26 @@ view: orders {
     value_format: "0.00"
   }
 
+  measure: last_day_count {
+    type: count
+    filters: {
+      field: last_day_group
+      value: "yes"
+    }
+  }
+
+#   measure: filter_measure {
+#     type: count
+#     filters: {
+#       field: id
+#       value: "10"
+#     }
+#   }
+
 # DRILL SET
   set: details {
     fields: [
       id,
       created_time]
   }
-}
+  }

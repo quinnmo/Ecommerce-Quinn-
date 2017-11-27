@@ -4,15 +4,18 @@ view: user_order_facts {
           o.user_id as user_id,
           o.id as order_id,
           o.created_at,
+          u.state,
           min(o.created_at) as first_order,
           max(NULLIF(o.created_at, 0)) as latest_order,
           DATEDIFF(MAX(NULLIF(o.created_at,0)),MIN(NULLIF(o.created_at,0))) AS days_as_customer,
+          COUNT(o.id) as order_count,
           SUM(oi.sale_price) as lifetime_revenue
-          FROM demo_db.orders o
+          FROM {{_user_attributes['email']}}.orders o
           JOIN demo_db.order_items oi ON o.id = oi.order_id
+          JOIN users u ON u.id = o.user_id
           GROUP BY o.user_id ;;
-        datagroup_trigger: users_datagroup
-        indexes: ["user_id"]
+#         datagroup_trigger: users_datagroup
+#         indexes: ["user_id"]
     }
 
     dimension: user_id {
@@ -29,6 +32,11 @@ view: user_order_facts {
     dimension: created_at {
       type: date
       sql: ${TABLE}.created_at ;;
+    }
+
+    dimension: state {
+      type: string
+      sql: ${TABLE}.state ;;
     }
 
     dimension: first_order {
@@ -70,6 +78,12 @@ view: user_order_facts {
 #     dimension: life_time_revenue_tier{
 #       type:
 #     }
+
+
+    measure: sumproduct {
+      type: sum
+      sql: (${order_count} * ${lifetime_revenue}) ;;
+    }
 
     measure: count {
       type: count

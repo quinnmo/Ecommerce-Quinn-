@@ -1,6 +1,7 @@
 view: users {
   sql_table_name: demo_db.users ;;
 
+
   dimension: id {
     primary_key: yes
     type: number
@@ -15,6 +16,7 @@ view: users {
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
+    map_layer_name: ca_cities_map
   }
 
   dimension: country {
@@ -87,6 +89,14 @@ view: users {
     type: average
     sql: ${age} ;;
     drill_fields: [detail*, avg_user_age]
+  }
+
+  measure: CA_users_count {
+    type: count
+    filters: {
+      field: state
+      value: "California"
+    }
   }
 
   # ----- Sets of fields for drilling ------

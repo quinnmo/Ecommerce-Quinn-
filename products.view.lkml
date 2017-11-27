@@ -6,6 +6,16 @@ view: products {
     suggest_dimension: category
   }
 
+  filter: brand_selector {      #not working?
+    label: "Brand Selector"
+    suggest_dimension: brand
+  }
+
+#    dimension: inventory_item_test {
+#      type: number
+#      sql: ${inventory_items.cost} ;;
+#    }
+
   dimension: id {
     primary_key: yes
     type: number
@@ -45,6 +55,15 @@ view: products {
   dimension: sku {
     type: string
     sql: ${TABLE}.sku ;;
+  }
+
+  dimension: brand_comparitor {           #not working??
+    sql:
+    CASE
+      WHEN {% condition brand_selector %} ${products.brand} {% endcondition %}  --get rid of substitution syntax around filter and works
+      THEN ${products.brand}
+      ELSE 'All Other Brands'
+    END ;;
   }
 
   measure: count {

@@ -6,6 +6,13 @@ include: "*.view"
 # include all the dashboards
 include: "*.dashboard"
 
+
+map_layer: ca_cities_map {
+  format: topojson
+  file: "Cities2015.json"
+  property_key: "NAME"
+}
+
 datagroup: orders_datagroup {
   sql_trigger: SELECT MAX(id) FROM orders ;;      #include etl??
   max_cache_age: "24 hours"
@@ -28,11 +35,12 @@ explore: events {
 
 explore: inventory_items {
   join: products {
-    type: left_outer
-    sql_on: ${inventory_items.product_id} = ${products.id} ;;
-    relationship: many_to_one
+      type: left_outer
+      sql_on: ${inventory_items.product_id} = ${products.id} ;;
+      relationship: many_to_one
+   }
   }
-}
+
 
 explore: order_items {
   join: inventory_items {
@@ -62,32 +70,34 @@ explore: order_items {
   }
 }
 
-explore: orders {
-  sql_always_where: ${created_year} >= 1980;;
-  join: users {
-    type: left_outer
-    sql_on: ${orders.user_id} = ${users.id} ;;
-    relationship: many_to_one
-  }
-}
+ explore: orders {
+   sql_always_where: ${created_year} >= 1980;;
+   join: users {
+      type: left_outer
+      sql_on: ${orders.user_id} = ${users.id} ;;
+      relationship: many_to_one
+   }
+ }
 
-explore: products {}
+ explore: products {}
 
-explore: schema_migrations {}
+ explore: schema_migrations {}
 
-explore: user_data {
-  join: users {
-    type: left_outer
-    sql_on: ${user_data.user_id} = ${users.id} ;;
-    relationship: many_to_one
-  }
-  persist_with: users_datagroup
-}
+ explore: user_data {
+   join: users {
+     type: left_outer
+     sql_on: ${user_data.user_id} = ${users.id} ;;
+     relationship: many_to_one
+   }
+   persist_with: users_datagroup
+ }
 
-explore: users {}
+explore: native_dt {}
 
-explore: users_nn {}
+ explore: users {}
 
-explore: user_order_facts {}
+ explore: users_nn {}
 
-explore: mvp_customers {}
+ explore: user_order_facts {}
+
+ explore: mvp_customers {}
